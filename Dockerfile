@@ -1,15 +1,18 @@
 FROM node:22-alpine AS base
 
+# Install pnpm 10 explicitly and enable corepack
 FROM base AS deps
 WORKDIR /app
-RUN corepack enable && pnpm i -g pnpm@10 && pnpm i
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN corepack enable && pnpm run build
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate && pnpm run build
 
 FROM base AS runner
 WORKDIR /app
