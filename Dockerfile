@@ -5,7 +5,7 @@ FROM base AS deps
 WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
@@ -18,10 +18,9 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Only copy the directories if they exist, to avoid build errors
-RUN if [ -d /app/.next/standalone ]; then cp -r /app/.next/standalone ./ ; fi
-RUN if [ -d /app/.next/static ]; then mkdir -p ./.next && cp -r /app/.next/static ./.next/static ; fi
-RUN if [ -d /app/public ]; then cp -r /app/public ./public ; fi
+# Correct copy operations to ensure artifacts are present in the final image, using multi-stage build conventions.
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 ENV PORT=80
 EXPOSE 80
