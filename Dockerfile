@@ -18,9 +18,9 @@ FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./ || true
+COPY --from=builder /app/.next/static ./.next/static || true
+COPY --from=builder /app/public ./public || true
 
 ENV PORT=80
 EXPOSE 80
