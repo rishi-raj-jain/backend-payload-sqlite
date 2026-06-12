@@ -2,8 +2,7 @@ FROM node:22-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN corepack enable && pnpm install
+RUN corepack enable && pnpm i -g pnpm@10 && pnpm i
 
 FROM base AS builder
 WORKDIR /app
