@@ -20,7 +20,7 @@ ENV NODE_ENV=production
 
 # Only copy the directories if they exist, to avoid build errors
 RUN if [ -d /app/.next/standalone ]; then cp -r /app/.next/standalone ./ ; fi
-RUN if [ -d /app/.next/static ]; then mkdir -p .next && cp -r /app/.next/static ./.next/static ; fi
+RUN if [ -d /app/.next/static ]; then mkdir -p ./.next && cp -r /app/.next/static ./.next/static ; fi
 RUN if [ -d /app/public ]; then cp -r /app/public ./public ; fi
 
 ENV PORT=80
